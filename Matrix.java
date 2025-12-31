@@ -450,6 +450,14 @@ public class Matrix {
     }
     private static ArrayList<Complex> QRAlgorithmUntilDeflated(Matrix A, int maxIterations, double convergenceMargin) {
         ArrayList<Complex> results = new ArrayList<>();
+        for (int i = 0; i < A.numRows; i++) {
+            for (int j = 0; j < A.numColumns; j++) {
+                if (Double.isNaN(A.get(i, j).getReal()) || Double.isNaN(A.get(i, j).getImaginary())) {
+                    System.out.println("Collapsed to NaN. Exiting...");
+                    return null;
+                }
+            }
+        }
         if (A.numRows == 1 && A.numColumns == 1) {
             results.add(A.get(0,0));
             return results;
@@ -468,7 +476,7 @@ public class Matrix {
         }
         boolean deflated = false;
         //we perform iterations (with a stopping limit) until the matrix is close to being upper. Each iteration maintains similarity to the initial matrix.
-        int[] deflationCoords = new int[2];
+        int[] deflationCoords = new int[]{1,0};
         for (int i = 0; i < maxIterations && !deflated; i++) {
             A = A.QRAlgorithmIteration();
             for (int j = 0; j < A.getNumColumns() - 1; j++) {
@@ -493,12 +501,16 @@ public class Matrix {
         Matrix leftDeflation = null;
         if (deflationCoords[0] > 0) {
             leftDeflation = A.subMatrix(0, deflationCoords[1] + 1, 0, deflationCoords[0]);
-            results = QRAlgorithmUntilDeflated(leftDeflation, maxIterations, convergenceMargin);
+            ArrayList<Complex> result1 = QRAlgorithmUntilDeflated(leftDeflation, maxIterations, convergenceMargin);
+            if (result1 == null) return null;
+            results.addAll(result1);
         }
         Matrix rightDeflation = null;
         if (deflationCoords[1] < A.numColumns - 1) {
             rightDeflation = A.subMatrix(deflationCoords[1] + 1, A.numColumns - deflationCoords[1] - 1, deflationCoords[0], A.numRows - deflationCoords[0]);
-            results.addAll(QRAlgorithmUntilDeflated(rightDeflation, maxIterations, convergenceMargin));
+            ArrayList<Complex> result2 = QRAlgorithmUntilDeflated(rightDeflation, maxIterations, convergenceMargin);
+            if (result2 == null) return null;
+            results.addAll(result2);
         }
         return results;
     }

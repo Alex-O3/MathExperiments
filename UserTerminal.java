@@ -41,8 +41,11 @@ public class UserTerminal {
                 choice = scnr.next().toLowerCase();
                 switch (choice) {
                     case "e" -> {
-                        ArrayList<Complex> eigen = matrix.QRAlgorithm(margin, 100);
-                        System.out.println("Eigenvalues:\n" + eigen);
+                        if (matrix.getNumRows() == matrix.getNumColumns()) {
+                            ArrayList<Complex> eigen = matrix.QRAlgorithm(margin, 1000);
+                            System.out.println("Eigenvalues:\n" + eigen);
+                        }
+                        else System.out.println("Matrix must be square.");
                     }
                     case "r" -> {
                         Matrix rref = matrix.clone();
@@ -50,7 +53,10 @@ public class UserTerminal {
                         System.out.println("RREF:\n" + rref);
                     }
                     case "d" -> {
-                        System.out.println("Determinant: " + matrix.determinant());
+                        if (matrix.getNumRows() == matrix.getNumColumns()) {
+                            System.out.println("Determinant: " + matrix.determinant());
+                        }
+                        else System.out.println("Matrix must be square");
                     }
                     case "i" -> {
                         System.out.println("Inverse Matrix:\n" + matrix.inverseMatrix());
@@ -166,7 +172,11 @@ public class UserTerminal {
         catch (Exception e) {
             polynomial = new Polynomial();
             System.out.print("Degree of polynomial: ");
-            int degree = getIntResponse();
+            int degree = -1;
+            while (degree < 0) {
+                degree = getIntResponse();
+                if (degree < 0) System.out.println("Degree must be non-negative");
+            }
             for (i = degree; i >= 0; i--) {
                 System.out.print("Coefficient of degree " + i + ": ");
                 String response = scnr.next();

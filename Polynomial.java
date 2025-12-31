@@ -23,14 +23,18 @@ public class Polynomial {
         }
     }
     public void set (int degree, Complex coefficient) {
-        if (polynomial.size() - 1 < degree) {
-            for (int i = polynomial.size(); i < degree; i = i + 1) {
-                polynomial.add(new Complex(0.0, 0.0));
+        if (!coefficient.equals(new Complex(0.0, 0.0))) {
+            if (polynomial.size() - 1 < degree) {
+                for (int i = polynomial.size(); i < degree; i = i + 1) {
+                    polynomial.add(new Complex(0.0, 0.0));
+                }
+                polynomial.add(coefficient);
+            } else {
+                polynomial.set(degree, coefficient);
             }
-            polynomial.add(coefficient);
         }
         else {
-            polynomial.set(degree, coefficient);
+            if (polynomial.size() - 1 > degree) polynomial.set(degree, coefficient);
         }
 
     }

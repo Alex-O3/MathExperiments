@@ -69,22 +69,31 @@ public class Complex {
     }
     public static Complex parseComplex (String s) {
         StringBuilder num = new StringBuilder();
-        s = s + ";";
+        if (!s.endsWith("i")) s = s + ";";
         double realNum = 0.0;
         double imaginaryNum = 0.0;
+        boolean negative = false;
         for (char ch : s.toCharArray()) {
             if (ch == '0' || ch == '1' || ch == '2' || ch == '3' || ch == '4' || ch == '5' || ch == '6' || ch == '7' || ch == '8' || ch == '9' || ch == '.') {
                 num.append(ch);
             }
             else if (!num.isEmpty()) {
-                if (ch != 'i') {
-                    realNum += Double.parseDouble(new String(num));
-                    num.delete(0, num.length());
+                try {
+                    if (ch != 'i') {
+                        if (negative) realNum += Double.parseDouble("-" + new String(num));
+                        else realNum += Double.parseDouble(new String(num));
+                        num.delete(0, num.length());
+                    } else {
+                        if (negative) imaginaryNum += Double.parseDouble("-" + new String(num));
+                        else imaginaryNum += Double.parseDouble(new String(num));
+                    }
                 }
-                else {
-                    imaginaryNum += Double.parseDouble(new String(num));
+                catch (Exception e) {
+                    //no action needed
                 }
+                negative = false;
             }
+            if (ch == '-') negative = true;
         }
         return new Complex(realNum, imaginaryNum);
     }
