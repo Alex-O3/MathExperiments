@@ -10,20 +10,17 @@ public class Main {
         Scanner scnr = new Scanner(System.in);
         while (scnr.next().toLowerCase().contains("y")) {
             int n = Integer.parseInt(scnr.next());
-            //System.out.print("Write (yes) or read? ");
-            if (true || scnr.next().toLowerCase().contains("yes")) {
-                writeMatrix(n, n, false);
-            }
+            writeMatrix(n, n, false);
 
             double margin = Math.pow(2, -32);
             Matrix matrix = readMatrix(n, n).subMatrix(0, n, 0, n);
             assert matrix != null;
-            //System.out.println(matrix);
+            System.out.println(matrix);
             long time1 = System.currentTimeMillis();
             ArrayList<Complex> eigen = matrix.QRAlgorithm(margin, 100);
             long time2 = System.currentTimeMillis();
             System.out.println((time2 - time1) + " milliseconds");
-            //System.out.println("Eigenvalues: " + eigen);
+            System.out.println("Eigenvalues: " + eigen);
             Complex sum = new Complex(0.0, 0.0);
             Complex prod = new Complex(1.0, 0.0);
             for (Complex eigenvalue : eigen) {
